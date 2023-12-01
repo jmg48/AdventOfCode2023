@@ -14,7 +14,7 @@ namespace AdventOfCode2023
             {
                 var found = false;
                 var first = 0;
-                int last = 0;
+                var last = 0;
 
                 void add(char c)
                 {
@@ -57,8 +57,7 @@ namespace AdventOfCode2023
         public void Part2()
         {
             var input = File.ReadAllLines("Input1.txt");
-
-
+            
             var map = new Dictionary<string, int>
             {
                 { "0", 0 },
@@ -110,8 +109,6 @@ namespace AdventOfCode2023
                         }
                     }
                 }
-
-                Console.WriteLine(10 * first + last);
 
                 result += 10 * first + last;
             }
