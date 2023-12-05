@@ -64,8 +64,6 @@ namespace AdventOfCode2023
                         copies[i + j + 1] += copies[i];
                     }
                 }
-
-                Console.WriteLine($"{i} : {copies[i]} : {score}");
             }
 
             var result = copies.Sum();
