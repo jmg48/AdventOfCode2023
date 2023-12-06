@@ -13,7 +13,7 @@ namespace AdventOfCode2023
     {
         [TestCase(1)]
         [TestCase(2)]
-        public void Part2(int part)
+        public void Part(int part)
         {
             var input = File.ReadAllLines("Input5.txt");
 
