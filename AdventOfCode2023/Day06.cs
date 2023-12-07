@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography.X509Certificates;
@@ -43,6 +44,9 @@ namespace AdventOfCode2023
         [Test]
         public void Part2()
         {
+            var timer = new Stopwatch();
+            timer.Start();
+
             long time = 48938466;
             long record = 261119210191063;
             long bigStep = 1000000;
@@ -58,7 +62,7 @@ namespace AdventOfCode2023
                     if (increment > 1)
                     {
                         t -= increment;
-                        increment /= 2;
+                        increment /= 10;
                     }
                     else
                     {
@@ -79,7 +83,7 @@ namespace AdventOfCode2023
                     if (increment > 1)
                     {
                         t -= increment;
-                        increment /= 2;
+                        increment /= 10;
                     }
                     else
                     {
@@ -89,7 +93,10 @@ namespace AdventOfCode2023
                 }
             }
 
+            timer.Stop();
+
             Console.WriteLine(minLoss - minWin);
+            Console.WriteLine($"{timer.ElapsedMilliseconds}ms");
         }
     }
 }
