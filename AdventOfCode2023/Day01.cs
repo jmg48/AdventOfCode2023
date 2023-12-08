@@ -1,8 +1,3 @@
-using System.ComponentModel;
-using System.Drawing;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
-
 namespace AdventOfCode2023
 {
     public class Day01
