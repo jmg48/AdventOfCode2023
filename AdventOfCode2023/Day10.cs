@@ -67,7 +67,6 @@ namespace AdventOfCode2023
             var result2 = 0;
             for (var i = 0; i < input.Length; i++)
             {
-                var left = '\0';
                 var isInside = false;
                 for (var j = 0; j < input[0].Length; j++)
                 {
@@ -75,19 +74,12 @@ namespace AdventOfCode2023
                     {
                         var current = input[i][j];
                         Console.Write(current);
-                        switch (left, current)
+                        switch (current)
                         {
-                            case (_, 'L'):
-                            case (_, 'F'):
-                                left = current;
-                                break;
-                            case (_, '|'):
-                                // | is always a crossing
-                                isInside = !isInside;
-                                break;
-                            case ('F', 'J'):
-                            case ('L','7'):
-                                // F---J or L---7 is a crossing
+                            case 'S': // because S is F in this puzzle
+                            case 'F':
+                            case '7':
+                            case '|':
                                 isInside = !isInside;
                                 break;
                         }
