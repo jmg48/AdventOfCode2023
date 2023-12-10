@@ -76,12 +76,18 @@ namespace AdventOfCode2023
                         Console.Write(current);
                         switch (current)
                         {
-                            case 'S': // because S is F in this puzzle
+                            // because | is always a crossing
+                            case '|':
+                            // because F---J (one match) is a crossing
+                            // because L---7 (one match) is a crossing
+                            // because F---7 (two matches) isn't a crossing
                             case 'F':
                             case '7':
-                            case '|':
+                            // because S is F in this puzzle (manually checked in the puzzle input)
+                            case 'S':
                                 isInside = !isInside;
                                 break;
+                            // because L---J (no matches) isn't a crossing
                         }
                     }
                     else if (isInside)
