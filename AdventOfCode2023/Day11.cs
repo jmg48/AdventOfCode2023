@@ -6,49 +6,42 @@ namespace AdventOfCode2023
 {
     public class Day11
     {
-        [Test]
-        public void Part()
+        [TestCase(1)]
+        [TestCase(2)]
+        public void Part(int part)
         {
+            var scale = part switch { 1 => 1, 2 => 999999 };
+
             var input = File.ReadLines("Input11.txt").ToList();
+            var rows = new HashSet<int>();
             var cols = new HashSet<int>();
             for (int i = 0; i < input.Count; i++)
             {
                 var line = input[i];
-                var found = false;
                 for (int j = 0; j < input[i].Length; j++)
                 {
                     if (line[j] == '#')
                     {
+                        rows.Add(i);
                         cols.Add(j);
-                        found = true;
                     }
                 }
-
-                if (!found)
-                {
-                    input.Insert(i, new string(input[i]));
-                    i++;
-                }
             }
 
-            var lines = input.Select(s => s.ToList()).ToList();
-            foreach (var col in Enumerable.Range(0, input[0].Length).Except(cols).OrderByDescending(i => i))
-            {
-                foreach (var line in lines)
-                {
-                    line.Insert(col, '.');
-                }
-            }
+            var emptyRows = Enumerable.Range(0, input.Count).Except(rows).ToList();
+            var emptyCols = Enumerable.Range(0, input[0].Length).Except(cols).ToList();
 
             var coords = new List<Coord>();
-            for (int i = 0; i < lines.Count; i++)
+            for (int i = 0; i < input.Count; i++)
             {
-                var line = lines[i];
-                for (int j = 0; j < line.Count; j++)
+                var line = input[i];
+                for (int j = 0; j < line.Length; j++)
                 {
                     if (line[j] == '#')
                     {
-                        coords.Add(new Coord(i, j));
+                        var x = i + scale * emptyRows.Count(ii => ii < i);
+                        var y = j + scale * emptyCols.Count(jj => jj < j);
+                        coords.Add(new Coord(x, y));
                     }
                 }
             }
