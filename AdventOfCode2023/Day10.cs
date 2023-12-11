@@ -118,36 +118,4 @@ namespace AdventOfCode2023
             };
         }
     }
-
-    public record Pipe(char symbol)
-    {
-        public (Dir, Dir) Dirs = symbol switch
-        {
-            '|' => (Dir.N, Dir.S),
-            '-' => (Dir.E, Dir.W),
-            'L' => (Dir.N, Dir.E),
-            'J' => (Dir.N, Dir.W),
-            '7' => (Dir.S, Dir.W),
-            'F' => (Dir.S, Dir.E),
-        };
-    }
-
-    public record Coord(int X, int Y)
-    {
-        public Coord Move(Dir dir)
-        {
-            return dir switch
-            {
-                Dir.N => new Coord(this.X - 1, this.Y),
-                Dir.S => new Coord(this.X + 1, this.Y),
-                Dir.E => new Coord(this.X, this.Y + 1),
-                Dir.W => new Coord(this.X, this.Y - 1),
-            };
-        }
-    }
-
-    public enum Dir
-    {
-        N, S, E, W
-    }
 }
