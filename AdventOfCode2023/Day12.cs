@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text.RegularExpressions;
@@ -8,129 +9,174 @@ namespace AdventOfCode2023
 {
     public class Day12
     {
-        [Test]
-        public void Part()
+        [TestCase(1)]
+        [TestCase(2)]
+        public void Part(int part)
         {
-            //var test = Arrangements("???.###", new List<int> { 1, 1, 3 });
-            //Console.WriteLine(Arrangements("?###????????", new List<int> { 3, 2, 1 }));
-            //return;
+            var timer = new Stopwatch();
+            timer.Start();
+
+            //var outFile = "C:\\src\\Day12.txt";
+            //File.WriteAllLines(outFile, new[] { "Day 12 Part 2"});
 
             var input = File.ReadLines("Input12.txt").ToList();
 
-            var result = 0;
-            foreach (var line in input)
+            var tasks = input.Select(line => Task.Factory.StartNew(() =>
             {
-                Console.WriteLine(line);
-
                 var pattern = line.Split(" ")[0];
                 var known = line.Split(" ")[1].Split(",").Select(int.Parse).ToList();
 
+                if (part == 2)
+                {
+                    var repeats = 5;
+                    pattern = string.Join("?", Enumerable.Repeat(pattern, repeats));
+                    known = Enumerable.Repeat(known, repeats).SelectMany(i => i).ToList();
+                }
+
+                var timer = new Stopwatch();
+                timer.Start();
                 var arrangements = Arrangements(pattern, known);
-                Console.WriteLine(arrangements);
-                result += arrangements;
+
+                return (arrangements, timer.ElapsedMilliseconds);
+            })).ToList();
+
+            long result = 0;
+            while (tasks.Count > 0)
+            {
+                var waitAny = Task.WaitAny(tasks.ToArray<Task>(), TimeSpan.FromSeconds(10));
+                var printRemaining = true;
+                if (waitAny >= 0)
+                {
+                    var (arrangements, elapsedMilliseconds) = tasks[waitAny].Result;
+                    result += arrangements;
+                    tasks.RemoveAt(waitAny);
+                    input.RemoveAt(waitAny);
+
+                    //File.AppendAllLines(outFile, new[] { $"Found {arrangements} arrangements in {elapsedMilliseconds}ms - interim result is {result} with {input.Count} tasks remaining" });
+                    printRemaining = true;
+                }
+                else if (printRemaining)
+                {
+                    //File.AppendAllLines(outFile, new[] { "Remaining tasks:" }.Concat(input));
+                    printRemaining = false;
+                }
             }
 
-            Console.WriteLine(result);
+            Console.WriteLine($"{result} in {timer.ElapsedMilliseconds}ms");
         }
 
-        private int Arrangements(string pattern, List<int> known, int offset = 0, bool verbose = false)
+        private long Arrangements(string pattern, List<int> known)
         {
-            if (verbose && offset == 0)
+            return Arrangements(pattern, known, 0, pattern.Length, "Begin");
+        }
+
+        private long Arrangements(string pattern, List<int> known, int patternOffset, int patternLength, string comment)
+        {
+            //Console.WriteLine($"{comment}: {new string(' ', patternOffset)}{pattern.Substring(patternOffset, patternLength)} {string.Join(",", known)}");
+            long result = 0;
+
+            var pivots = patternLength - known.Sum() - known.Count + 2;
+
+            if (known.Count > 1)
             {
-                Console.WriteLine(pattern);
-            }
+                var knownLeft = known.Take(known.Count / 2).ToList();
+                var knownMiddle = known[known.Count / 2];
+                var knownRight = known.Skip(known.Count / 2 + 1).ToList();
 
-            var result = 0;
+                var minPivot = knownLeft.Sum() + knownLeft.Count - 1;
 
-            var positions = pattern.Length - offset - known.Sum() - known.Count + 2;
-
-            for (var i = 0; i < positions; i++)
-            {
-                var x = offset;
-                var isPossible = true;
-                for (var j = 0; isPossible && j < i; j++)
+                var pivot = minPivot;
+                for (var i = 0; i < pivots; i++, pivot++)
                 {
-                    if (pattern[x] == '#')
+                    var pivot2 = pivot + 1 + knownMiddle;
+                    //Console.WriteLine($"Pivot: {new string(' ', patternOffset + pivot)}.{new string('#', knownMiddle)}. = {pivot}");
+
+                    // Pivot point cannot be filled
+                    if (pattern[patternOffset + pivot] == '#' || (pivot2 < patternLength && pattern[patternOffset + pivot2] == '#'))
                     {
-                        isPossible = false;
+                        continue;
                     }
 
-                    x++;
-                }
-
-                for (var j = 0; isPossible && j < known[0]; j++)
-                {
-                    if (pattern[x] == '.')
+                    var middle = Arrangements(pattern, new List<int> { knownMiddle }, patternOffset + pivot + 1, knownMiddle, "Mid  ");
+                    if (middle == 0)
                     {
-                        isPossible = false;
+                        continue;
                     }
 
-                    x++;
-                }
-
-                if (x < pattern.Length && pattern[x] == '#')
-                {
-                    isPossible = false;
-                }
-
-                x++;
-
-                if (isPossible)
-                {
-                    if (verbose)
+                    var left = Arrangements(pattern, knownLeft, patternOffset, pivot, "Left ");
+                    if (left == 0)
                     {
-                        Console.WriteLine(new string(' ', offset + i) + new string('#', known[0]) + '.');
+                        continue;
                     }
 
-                    if (known.Count == 1)
+                    if (knownRight.Count > 0)
                     {
-                        for (int j = x; j < pattern.Length; j++)
+                        var right = Arrangements(pattern, knownRight,  patternOffset + pivot2 + 1, patternLength - pivot2 - 1, "Right");
+                        result += left * right;
+                    }
+                    else if (pivot2 < patternLength)
+                    {
+                        var isPossible = true;
+                        for (var x = pivot2; x < patternLength; x++)
                         {
-                            if (pattern[j] == '#')
+                            if (pattern[patternOffset + x] == '#')
                             {
                                 isPossible = false;
                             }
                         }
 
-                        if (isPossible)
+                        if (!isPossible)
                         {
-                            result++;
+                            continue;
                         }
+
+                        result += left;
                     }
                     else
                     {
-                        result += Arrangements(pattern, known.Skip(1).ToList(), x);
+                        result += left;
                     }
                 }
             }
-
-            return result;
-        }
-
-        private bool IsPossible(string pattern, List<int> known)
-        {
-            var i = 0;
-            foreach (var group in known)
+            else
             {
-                for (int j = 0; j < group; j++)
+                for (var i = 0; i < pivots; i++)
                 {
-                    if (pattern[i] == '.')
+                    var x = 0;
+                    var isPossible = true;
+                    for (; isPossible && x < i; x++)
                     {
-                        return false;
+                        if (pattern[patternOffset + x] == '#')
+                        {
+                            isPossible = false;
+                        }
                     }
 
-                    i++;
-                }
+                    for (; isPossible && x < i + known[0]; x++)
+                    {
+                        if (pattern[patternOffset + x] == '.')
+                        {
+                            isPossible = false;
+                        }
+                    }
 
-                if (pattern[i] == '#')
-                {
-                    return false;
-                }
+                    for (; isPossible && x < patternLength; x++)
+                    {
+                        if (pattern[patternOffset + x] == '#')
+                        {
+                            isPossible = false;
+                        }
+                    }
 
-                i++;
+                    if (isPossible)
+                    {
+                        result++;
+                    }
+                }
             }
 
-            return true;
+            //Console.WriteLine($"{comment}: {new string(' ', patternOffset)}{pattern.Substring(patternOffset, patternLength)} {string.Join(",", known)} = {result}");
+            return result;
         }
     }
 }
