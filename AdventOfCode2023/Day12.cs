@@ -65,118 +65,117 @@ namespace AdventOfCode2023
             Console.WriteLine($"{result} in {timer.ElapsedMilliseconds}ms");
         }
 
-        private long Arrangements(string pattern, List<int> known)
+        private long Arrangements(string pattern, IReadOnlyList<int> sections) =>
+            Arrangements(pattern, sections, 0, pattern.Length);
+
+        private long Arrangements(string pattern, IReadOnlyList<int> sections, int patternOffset, int patternLength) =>
+            sections.Count switch
+            {
+                0 => NoSections(pattern, patternOffset, patternLength),
+                1 => OneSection(pattern, sections[0], patternOffset, patternLength),
+                _ => MultipleSections(pattern, sections, patternOffset, patternLength)
+            };
+
+        private long MultipleSections(string pattern, IReadOnlyList<int> sections, int patternOffset, int patternLength)
         {
-            return Arrangements(pattern, known, 0, pattern.Length, "Begin");
+            // If there's more than one section, split the sections into three smaller sub-problems
+            var leftSections = sections.Take(sections.Count / 2).ToList();
+            var pivotSection = sections[sections.Count / 2];
+            var rightSections = sections.Skip(sections.Count / 2 + 1).ToList();
+
+            // For each possible position of the pivot section...
+            var beforePivotMin = leftSections.Sum() + leftSections.Count - 1;
+            var beforePivot = beforePivotMin;
+            var slack = patternLength - sections.Sum() - sections.Count + 2;
+            long result = 0;
+            for (var i = 0; i < slack; i++, beforePivot++)
+            {
+                // Check points before and after the pivot section are empty - if not then we're done
+                var afterPivot = beforePivot + 1 + pivotSection;
+                if (pattern[patternOffset + beforePivot] == '#' || (afterPivot < patternLength && pattern[patternOffset + afterPivot] == '#'))
+                {
+                    continue;
+                }
+
+                // Check the pivot section is legally placed - if not then we're done
+                var middle = OneSection(pattern, pivotSection, patternOffset + beforePivot + 1, pivotSection);
+                if (middle == 0)
+                {
+                    continue;
+                }
+
+                // Check how many ways the left section(s) can be placed in the space to the left of the pivot - if none then we're done
+                var left = Arrangements(pattern, leftSections, patternOffset, beforePivot);
+                if (left == 0)
+                {
+                    continue;
+                }
+
+                // Check how many ways the right section(s) can be placed in the space to the right of the pivot
+                var right = Arrangements(pattern, rightSections, patternOffset + afterPivot + 1, patternLength - afterPivot - 1);
+
+                // Add to the result the combined permutations of left and right
+                result += left * right;
+            }
+
+            return result;
         }
 
-        private long Arrangements(string pattern, List<int> known, int patternOffset, int patternLength, string comment)
+        private long OneSection(string pattern, int section, int patternOffset, int patternLength)
         {
-            //Console.WriteLine($"{comment}: {new string(' ', patternOffset)}{pattern.Substring(patternOffset, patternLength)} {string.Join(",", known)}");
+            // If there's only one section, then try it in each of its possible positions
+            var slack = patternLength - section - 1 + 2;
             long result = 0;
-
-            var pivots = patternLength - known.Sum() - known.Count + 2;
-
-            if (known.Count > 1)
+            for (var i = 0; i < slack; i++)
             {
-                var knownLeft = known.Take(known.Count / 2).ToList();
-                var knownMiddle = known[known.Count / 2];
-                var knownRight = known.Skip(known.Count / 2 + 1).ToList();
-
-                var minPivot = knownLeft.Sum() + knownLeft.Count - 1;
-
-                var pivot = minPivot;
-                for (var i = 0; i < pivots; i++, pivot++)
+                var x = 0;
+                var isPossible = true;
+                for (; isPossible && x < i; x++)
                 {
-                    var pivot2 = pivot + 1 + knownMiddle;
-                    //Console.WriteLine($"Pivot: {new string(' ', patternOffset + pivot)}.{new string('#', knownMiddle)}. = {pivot}");
-
-                    // Pivot point cannot be filled
-                    if (pattern[patternOffset + pivot] == '#' || (pivot2 < patternLength && pattern[patternOffset + pivot2] == '#'))
+                    if (pattern[patternOffset + x] == '#')
                     {
-                        continue;
-                    }
-
-                    var middle = Arrangements(pattern, new List<int> { knownMiddle }, patternOffset + pivot + 1, knownMiddle, "Mid  ");
-                    if (middle == 0)
-                    {
-                        continue;
-                    }
-
-                    var left = Arrangements(pattern, knownLeft, patternOffset, pivot, "Left ");
-                    if (left == 0)
-                    {
-                        continue;
-                    }
-
-                    if (knownRight.Count > 0)
-                    {
-                        var right = Arrangements(pattern, knownRight,  patternOffset + pivot2 + 1, patternLength - pivot2 - 1, "Right");
-                        result += left * right;
-                    }
-                    else if (pivot2 < patternLength)
-                    {
-                        var isPossible = true;
-                        for (var x = pivot2; x < patternLength; x++)
-                        {
-                            if (pattern[patternOffset + x] == '#')
-                            {
-                                isPossible = false;
-                            }
-                        }
-
-                        if (!isPossible)
-                        {
-                            continue;
-                        }
-
-                        result += left;
-                    }
-                    else
-                    {
-                        result += left;
+                        isPossible = false;
                     }
                 }
-            }
-            else
-            {
-                for (var i = 0; i < pivots; i++)
+
+                for (; isPossible && x < i + section; x++)
                 {
-                    var x = 0;
-                    var isPossible = true;
-                    for (; isPossible && x < i; x++)
+                    if (pattern[patternOffset + x] == '.')
                     {
-                        if (pattern[patternOffset + x] == '#')
-                        {
-                            isPossible = false;
-                        }
+                        isPossible = false;
                     }
+                }
 
-                    for (; isPossible && x < i + known[0]; x++)
+                for (; isPossible && x < patternLength; x++)
+                {
+                    if (pattern[patternOffset + x] == '#')
                     {
-                        if (pattern[patternOffset + x] == '.')
-                        {
-                            isPossible = false;
-                        }
+                        isPossible = false;
                     }
+                }
 
-                    for (; isPossible && x < patternLength; x++)
-                    {
-                        if (pattern[patternOffset + x] == '#')
-                        {
-                            isPossible = false;
-                        }
-                    }
-
-                    if (isPossible)
-                    {
-                        result++;
-                    }
+                if (isPossible)
+                {
+                    // If the position is legal then it counts as one possible arrangement
+                    result++;
                 }
             }
 
-            //Console.WriteLine($"{comment}: {new string(' ', patternOffset)}{pattern.Substring(patternOffset, patternLength)} {string.Join(",", known)} = {result}");
             return result;
+        }
+
+        private static long NoSections(string pattern, int patternOffset, int patternLength)
+        {
+            // If there are no sections, check the space can be entirely empty
+            for (var x = 0; x < patternLength; x++)
+            {
+                if (pattern[patternOffset + x] == '#')
+                {
+                    return 0;
+                }
+            }
+
+            return 1;
         }
     }
 }
