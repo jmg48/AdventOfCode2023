@@ -15,10 +15,10 @@ namespace AdventOfCode2023
             var input = File.ReadLines("Input11.txt").ToList();
             var rows = new HashSet<int>();
             var cols = new HashSet<int>();
-            for (int i = 0; i < input.Count; i++)
+            for (var i = 0; i < input.Count; i++)
             {
                 var line = input[i];
-                for (int j = 0; j < input[i].Length; j++)
+                for (var j = 0; j < input[i].Length; j++)
                 {
                     if (line[j] == '#')
                     {
@@ -32,10 +32,10 @@ namespace AdventOfCode2023
             var emptyCols = Enumerable.Range(0, input[0].Length).Except(cols).ToList();
 
             var coords = new List<Coord>();
-            for (int i = 0; i < input.Count; i++)
+            for (var i = 0; i < input.Count; i++)
             {
                 var line = input[i];
-                for (int j = 0; j < line.Length; j++)
+                for (var j = 0; j < line.Length; j++)
                 {
                     if (line[j] == '#')
                     {
@@ -47,10 +47,10 @@ namespace AdventOfCode2023
             }
 
             long result = 0;
-            for (int i = 0; i < coords.Count; i++)
+            for (var i = 0; i < coords.Count; i++)
             {
                 var a = coords[i];
-                for (int j = 0; j < i; j++)
+                for (var j = 0; j < i; j++)
                 {
                     var b = coords[j];
                     result += Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
