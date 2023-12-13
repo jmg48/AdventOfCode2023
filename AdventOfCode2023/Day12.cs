@@ -1,9 +1,4 @@
 using System.Diagnostics;
-using System.Reflection.PortableExecutable;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
-using Microsoft.VisualBasic;
 
 namespace AdventOfCode2023
 {

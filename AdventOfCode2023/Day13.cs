@@ -1,11 +1,3 @@
-using System.Diagnostics;
-using System.Reflection.PortableExecutable;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
-using Microsoft.VisualBasic;
-
 namespace AdventOfCode2023
 {
     public class Day13
@@ -25,16 +17,18 @@ namespace AdventOfCode2023
                 }
                 else
                 {
-                    patterns[^1].Add(line); 
+                    patterns[^1].Add(line);
                 }
             }
 
             var result = 0;
             foreach (var pattern in patterns)
             {
-                foreach (var (colsOrRows, scoreMultiple, rowOrColSelector) in new (int, int, Func<int, IEnumerable<char>>)[]
+                // Rows and cols are similar, just need to know the number of rows / cols and how to access a col / row in each case
+                foreach (var (colsOrRows, scoreMultiple, rowOrColSelector) in
+                         new (int, int, Func<int, IEnumerable<char>>)[]
                          {
-                             (pattern.Count, 100, it => pattern[it]), 
+                             (pattern.Count, 100, it => pattern[it]),
                              (pattern[0].Length, 1, it => pattern.Select(row => row[it])),
                          })
                 {
