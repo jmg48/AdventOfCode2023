@@ -16,9 +16,8 @@ namespace AdventOfCode2023
         {
             var target = part switch { 1 => 0, 2 => 1 };
 
-            var input = File.ReadLines("Input13.txt").ToList();
             var patterns = new List<List<string>> { new() };
-            foreach (var line in input)
+            foreach (var line in File.ReadLines("Input13.txt"))
             {
                 if (line.Length == 0)
                 {
@@ -33,40 +32,21 @@ namespace AdventOfCode2023
             var result = 0;
             foreach (var pattern in patterns)
             {
-                for (var i = 1; i < pattern.Count; i++)
+                foreach (var (colsOrRows, scoreMultiple, rowOrColSelector) in new (int, int, Func<int, IEnumerable<char>>)[]
+                         {
+                             (pattern.Count, 100, it => pattern[it]), 
+                             (pattern[0].Length, 1, it => pattern.Select(row => row[it])),
+                         })
                 {
-                    var smudges = 0;
-                    var j = i;
-                    var k = i - 1;
-                    while (j < pattern.Count && k >= 0)
+                    for (var i = 1; i < colsOrRows; i++)
                     {
-                        smudges += pattern[j].Zip(pattern[k]).Count(it => it.First != it.Second);
+                        var smudges = 0;
+                        for (var (j, k) = (i, i - 1); j < colsOrRows && k >= 0; (j, k) = (j + 1, k - 1))
+                        {
+                            smudges += rowOrColSelector(j).Zip(rowOrColSelector(k)).Count(it => it.First != it.Second);
+                        }
 
-                        j++;
-                        k--;
-                    }
-
-                    if (smudges == target)
-                    {
-                        result += 100 * i;
-                    }
-                }
-
-                for (var i = 1; i < pattern[0].Length; i++)
-                {
-                    var smudges = 0;
-                    var j = i;
-                    var k = i - 1;
-                    while (j < pattern[0].Length && k >= 0)
-                    {
-                        smudges += pattern.Count(row => row[j] != row[k]);
-                        j++;
-                        k--;
-                    }
-
-                    if (smudges == target)
-                    {
-                        result += i;
+                        result += smudges == target ? scoreMultiple * i : 0;
                     }
                 }
             }
