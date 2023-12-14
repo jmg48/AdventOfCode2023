@@ -2,30 +2,39 @@ namespace AdventOfCode2023
 {
     public class Day01
     {
+        /*
+         * The newly-improved calibration document consists of lines of text; each line originally
+         * contained a specific calibration value that the Elves now need to recover. On each line,
+         * the calibration value can be found by combining the first digit and the last digit (in
+         * that order) to form a single two-digit number.
+         *
+         * For example:
+         *  
+         * 1abc2
+         * pqr3stu8vwx
+         * a1b2c3d4e5f
+         * treb7uchet
+         *
+         * In this example, the calibration values of these four lines are 12, 38, 15, and 77.
+         * Adding these together produces 142.
+         *
+         * Consider your entire calibration document. What is the sum of all of the calibration
+         * values?
+         */
+
         [Test]
         public void Part1()
         {
             var input = File.ReadAllLines("Input1.txt");
 
+            /*
+             * On each line, the calibration value can be found by combining the first digit and
+             * the last digit (in that order) to form a single two-digit number.
+             */
             var result = 0;
             foreach (var line in input)
             {
-                var found = false;
-                var first = 0;
-                var last = 0;
-
-                void add(char c)
-                {
-                    var i = int.Parse(c.ToString());
-                    if (!found)
-                    {
-                        first = i;
-                        found = true;
-                    }
-
-                    last = i;
-                }
-
+                var found = new List<int>();
                 foreach (var c in line)
                 {
                     switch (c)
@@ -40,12 +49,12 @@ namespace AdventOfCode2023
                         case '7':
                         case '8':
                         case '9':
-                            add(c);
+                            found.Add(int.Parse(c.ToString()));
                             break;
                     }
                 }
 
-                result += 10 * first + last;
+                result += (10 * found[0]) + found[^1];
             }
 
             Console.WriteLine(result);
@@ -55,7 +64,11 @@ namespace AdventOfCode2023
         public void Part2()
         {
             var input = File.ReadAllLines("Input1.txt");
-            
+
+            /*
+             * It looks like some of the digits are actually spelled out with letters: one, two,
+             * three, four, five, six, seven, eight, and nine also count as valid "digits".
+             */
             var map = new Dictionary<string, int>
             {
                 { "0", 0 },
@@ -82,33 +95,19 @@ namespace AdventOfCode2023
             var result = 0;
             foreach (var line in input)
             {
-                var found = false;
-                var first = 0;
-                var last = 0;
-
-                void Add(int i)
-                {
-                    if (!found)
-                    {
-                        first = i;
-                        found = true;
-                    }
-
-                    last = i;
-                }
-
+                var found = new List<int>();
                 for (var i = 0; i < line.Length; i++)
                 {
                     foreach (var (key, value) in map)
                     {
                         if (i + key.Length <= line.Length && line.Substring(i, key.Length) == key)
                         {
-                            Add(value);
+                            found.Add(value);
                         }
                     }
                 }
 
-                result += 10 * first + last;
+                result +=(10 * found[0]) + found[^1];
             }
 
             Console.WriteLine(result);
