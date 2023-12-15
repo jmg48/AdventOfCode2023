@@ -9,7 +9,7 @@ namespace AdventOfCode2023
          * that order) to form a single two-digit number.
          *
          * For example:
-         *  
+         *
          * 1abc2
          * pqr3stu8vwx
          * a1b2c3d4e5f
@@ -49,11 +49,13 @@ namespace AdventOfCode2023
                         case '7':
                         case '8':
                         case '9':
+                            // Accumulate all the digits into a list...
                             found.Add(int.Parse(c.ToString()));
                             break;
                     }
                 }
 
+                // ...then add the number formed by the first and last digits to the result
                 result += (10 * found[0]) + found[^1];
             }
 
@@ -100,6 +102,7 @@ namespace AdventOfCode2023
                 {
                     foreach (var (key, value) in map)
                     {
+                        // Process is identical to part 1, just matching a longer substring without overrunning the end of the string
                         if (i + key.Length <= line.Length && line.Substring(i, key.Length) == key)
                         {
                             found.Add(value);
@@ -107,7 +110,7 @@ namespace AdventOfCode2023
                     }
                 }
 
-                result +=(10 * found[0]) + found[^1];
+                result += (10 * found[0]) + found[^1];
             }
 
             Console.WriteLine(result);
