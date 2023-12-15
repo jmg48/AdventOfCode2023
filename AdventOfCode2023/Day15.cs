@@ -57,32 +57,16 @@ namespace AdventOfCode2023
                 }
             }
 
-            var result = 0;
-            for (int i = 0; i < boxes.Count; i++)
-            {
-                for (int j = 0; j < boxes[i].Count; j++)
-                {
-                    var power = (i + 1) * (j + 1) * boxes[i][j].Length;
-                    result += power;
-                }
-            }
+            var result = boxes.Select(
+                    (box, i) => box.Select(
+                            (lens, j) => (i + 1) * (j + 1) * lens.Length)
+                        .Sum())
+                .Sum();
 
             Console.WriteLine(result);
         }
 
-        private static int Hash(string step)
-        {
-            var bytes = Encoding.UTF8.GetBytes(step);
-
-            var hash = 0;
-            foreach (var code in bytes)
-            {
-                hash += code;
-                hash *= 17;
-                hash = hash % 256;
-            }
-
-            return hash;
-        }
+        private static int Hash(string step) =>
+            Encoding.UTF8.GetBytes(step).Aggregate(0, (hash, c) => ((hash + c) * 17) % 256);
     }
 }
