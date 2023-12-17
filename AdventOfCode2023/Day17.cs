@@ -4,9 +4,13 @@ namespace AdventOfCode2023
 {
     public class Day17
     {
-        [Test]
-        public void Part1()
+        [TestCase(1)]
+        [TestCase(2)]
+        public void Part(int part)
         {
+            var maxPath = part switch { 1 => 3, 2 => 10 };
+            var minPath = part switch { 1 => 0, 2 => 4 };
+
             var input = File.ReadLines("Input17.txt").Select(s => s.Select(c => int.Parse(c.ToString())).ToList()).ToList();
 
             var visited = new Dictionary<Key, int>();
@@ -42,12 +46,12 @@ namespace AdventOfCode2023
                     }
                 }
 
-                if (key.Path < 10)
+                if (key.Path < maxPath)
                 {
                     Tentative(new Key(key.Pos.Move(key.Dir), key.Dir, key.Path + 1));
                 }
 
-                if (key.Path > 3)
+                if (key.Path >= minPath)
                 {
                     switch (key.Dir)
                     {
@@ -65,28 +69,11 @@ namespace AdventOfCode2023
                 }
             }
 
-            var result = visited.Where(kvp => kvp.Key.Pos.X == input.Count - 1 && kvp.Key.Pos.Y == input[0].Count - 1 && kvp.Key.Path > 3)
+            var result = visited
+                .Where(kvp => kvp.Key.Pos.X == input.Count - 1 && kvp.Key.Pos.Y == input[0].Count - 1 && kvp.Key.Path >= minPath)
                 .Select(kvp => kvp.Value).Min();
 
             Console.WriteLine(result);
-
-            //foreach (var dir in new[] { Dir.N, Dir.S, Dir.E, Dir.W })
-            //{
-            //    Console.WriteLine(dir);
-            //    for (int i = 0; i < input.Count; i++)
-            //    {
-            //        for (int j = 0; j < input[i].Count; j++)
-            //        {
-            //            var score = visited.Where(kvp => kvp.Key.Pos.X == i && kvp.Key.Pos.Y == j && kvp.Key.Dir == dir)
-            //                .Select(kvp => kvp.Value).Aggregate(999, (a, b) => a < b ? a : b);
-            //            Console.Write($"{score,4}");
-            //        }
-
-            //        Console.WriteLine();
-            //    }
-
-            //    Console.WriteLine();
-            //}
         }
 
         private record Key(Coord Pos, Dir Dir, int Path);
