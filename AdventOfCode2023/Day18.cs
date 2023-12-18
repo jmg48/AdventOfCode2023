@@ -4,94 +4,44 @@ namespace AdventOfCode2023
 {
     public class Day18
     {
-        [Test]
-        public void Part1()
+        [TestCase(1)]
+        [TestCase(2)]
+        public void Part(int part)
         {
-            var input = File.ReadLines("Input18a.txt").ToList();
+            var input = File.ReadLines("Input18.txt").ToList();
 
-            var map = new Dictionary<Coord, string>();
-
+            var current = new Coord(0, 0);
+            var pathLength = 0;
+            long area = 0;
+            foreach (var step in input.Select(line => line.Split(' ')))
             {
-                var pos = new Coord(0, 0);
-                foreach (var line in input)
+                var dir = part switch
                 {
-                    var split = line.Split(' ');
+                    1 => step[0] switch { "U" => Dir.N, "D" => Dir.S, "R" => Dir.E, "L" => Dir.W, },
+                    2 => step[2][^2] switch { '0' => Dir.E, '1' => Dir.S, '2' => Dir.W, '3' => Dir.N, },
+                };
 
-                    var xxx = Convert.ToInt32(split[2][2..^2], 16);
+                var dist = part switch
+                {
+                    1 => int.Parse(step[1]),
+                    2 => Convert.ToInt32(step[2][2..^2], 16),
+                };
 
-                    var dir = split[0] switch
-                    {
-                        "U" => Dir.N,
-                        "D" => Dir.S,
-                        "R" => Dir.E,
-                        "L" => Dir.W,
-                    };
+                var next = current.Move(dir, dist);
 
-                    var dist = int.Parse(split[1]);
+                pathLength += dist;
+                
+                // https://en.wikipedia.org/wiki/Shoelace_formula
+                var det = ((long)current.X * next.Y) - ((long)next.X * current.Y);
+                area += det;
 
-                    map[pos] = split[2];
-                    for (int i = 0; i < dist; i++)
-                    {
-                        pos = pos.Move(dir);
-                        map[pos] = split[2];
-                    }
-                }
+                current = next;
             }
 
-            var xMin = map.Keys.Select(it => it.X).Min();
-            var xMax = map.Keys.Select(it => it.X).Max();
-            var yMin = map.Keys.Select(it => it.Y).Min();
-            var yMax = map.Keys.Select(it => it.Y).Max();
-
-            var outside = new HashSet<Coord>();
-            var fill = new Queue<Coord>();
-            fill.Enqueue(new Coord(xMin - 1, yMin - 1));
-            while (fill.TryDequeue(out var pos))
-            {
-                if (pos.X < xMin - 1 || pos.Y < yMin - 1 || pos.X > xMax + 1 || pos.Y > yMax + 1)
-                {
-                    continue;
-                }
-
-                if (map.ContainsKey(pos) || outside.Contains(pos))
-                {
-                    continue;
-                }
-
-                outside.Add(pos);
-
-                foreach (var dir in new[] { Dir.N, Dir.S, Dir.E, Dir.W})
-                {
-                    fill.Enqueue(pos.Move(dir));
-                }
-            }
-
-            var result = 0;
-            for (int i = xMin; i <= xMax; i++)
-            {
-                var crossings = 0;
-                for (int j = yMin; j <= yMax; j++)
-                {
-                    if (map.TryGetValue(new Coord(i, j), out var val))
-                    {
-                        result++;
-                        Console.Write("#");
-                    }
-                    else if(outside.Contains(new Coord(i, j)))
-                    {
-                        Console.Write(".");
-                    }
-                    else
-                    {
-                        result++;
-                        Console.Write("o");
-                    }
-                }
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine(result);
+            // The edge of the calculated area follows the center of the outline trench, so we add:
+            // 1) Half the path length, i.e. from the center of the outline trench to its edge
+            // 2) One extra unit, i.e the four quarter units of the outer corners of the trench
+            Console.WriteLine(Math.Abs(area) / 2 + pathLength / 2 + 1);
         }
     }
 }
