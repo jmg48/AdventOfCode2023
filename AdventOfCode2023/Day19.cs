@@ -1,15 +1,13 @@
-using System.Data;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 namespace AdventOfCode2023
 {
-    public class Day19
+    public class Day19 : Aoc
     {
         [Test]
         public void Part1()
         {
-            var input = File.ReadAllText("Input19.txt").Split("\n\n");
+            var input = InputText().Split("\n\n");
 
             var workflows = input[0].Split("\n").Select(it =>
             {
@@ -36,22 +34,9 @@ namespace AdventOfCode2023
             foreach (var part in parts)
             {
                 var workflowKey = "in";
-                while (true)
+                while (workflows.TryGetValue(workflowKey, out var workflow))
                 {
-                    if (workflowKey == "A")
-                    {
-                        // "A" is a special workflow key meaning we Accept the part and add its values to the result
-                        result += part.Values.Sum();
-                        break;
-                    }
-
-                    if (workflowKey == "R")
-                    {
-                        // "R" is a special workflow key meaning we Reject the part
-                        break;
-                    }
-
-                    foreach (var rule in workflows[workflowKey])
+                    foreach (var rule in workflow)
                     {
                         if (!rule.Contains(":"))
                         {
@@ -71,6 +56,10 @@ namespace AdventOfCode2023
                         }
                     }
                 }
+
+                // "A" is a special workflow key meaning we Accept the part and add its values to the result
+                // "R" is a special workflow key meaning we Reject the part
+                result += workflowKey switch { "A" => part.Values.Sum(), "R" => 0 };
             }
 
             Console.WriteLine(result);
@@ -79,7 +68,7 @@ namespace AdventOfCode2023
         [Test]
         public void Part2()
         {
-            var input = File.ReadAllText("Input19.txt").Split("\n\n");
+            var input = InputText().Split("\n\n");
 
             var workflows = input[0].Split("\n").Select(it =>
             {

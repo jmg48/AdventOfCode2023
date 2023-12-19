@@ -1,38 +1,12 @@
 namespace AdventOfCode2023
 {
-    public class Day01
+    public class Day01 : Aoc
     {
-        /*
-         * The newly-improved calibration document consists of lines of text; each line originally
-         * contained a specific calibration value that the Elves now need to recover. On each line,
-         * the calibration value can be found by combining the first digit and the last digit (in
-         * that order) to form a single two-digit number.
-         *
-         * For example:
-         *
-         * 1abc2
-         * pqr3stu8vwx
-         * a1b2c3d4e5f
-         * treb7uchet
-         *
-         * In this example, the calibration values of these four lines are 12, 38, 15, and 77.
-         * Adding these together produces 142.
-         *
-         * Consider your entire calibration document. What is the sum of all of the calibration
-         * values?
-         */
-
         [Test]
         public void Part1()
         {
-            var input = File.ReadAllLines("Input1.txt");
-
-            /*
-             * On each line, the calibration value can be found by combining the first digit and
-             * the last digit (in that order) to form a single two-digit number.
-             */
             var result = 0;
-            foreach (var line in input)
+            foreach (var line in InputLines())
             {
                 var found = new List<int>();
                 foreach (var c in line)
@@ -65,12 +39,6 @@ namespace AdventOfCode2023
         [Test]
         public void Part2()
         {
-            var input = File.ReadAllLines("Input1.txt");
-
-            /*
-             * It looks like some of the digits are actually spelled out with letters: one, two,
-             * three, four, five, six, seven, eight, and nine also count as valid "digits".
-             */
             var map = new Dictionary<string, int>
             {
                 { "0", 0 },
@@ -95,7 +63,7 @@ namespace AdventOfCode2023
             };
 
             var result = 0;
-            foreach (var line in input)
+            foreach (var line in InputLines())
             {
                 var found = new List<int>();
                 for (var i = 0; i < line.Length; i++)

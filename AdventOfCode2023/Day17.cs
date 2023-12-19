@@ -1,8 +1,6 @@
-using System.Security.Cryptography;
-
 namespace AdventOfCode2023
 {
-    public class Day17
+    public class Day17 : Aoc
     {
         [TestCase(1)]
         [TestCase(2)]
@@ -11,7 +9,7 @@ namespace AdventOfCode2023
             var maxPath = part switch { 1 => 3, 2 => 10 };
             var minPath = part switch { 1 => 0, 2 => 4 };
 
-            var input = File.ReadLines("Input17.txt").Select(s => s.Select(c => int.Parse(c.ToString())).ToList()).ToList();
+            var input = InputLines().Select(s => s.Select(c => int.Parse(c.ToString())).ToList()).ToList();
 
             var visited = new Dictionary<Key, int>();
             var unvisited = new Dictionary<Key, int>

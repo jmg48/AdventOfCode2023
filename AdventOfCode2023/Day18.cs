@@ -1,14 +1,12 @@
-using System.Security.Cryptography;
-
 namespace AdventOfCode2023
 {
-    public class Day18
+    public class Day18 : Aoc
     {
         [TestCase(1)]
         [TestCase(2)]
         public void Part(int part)
         {
-            var input = File.ReadLines("Input18.txt").ToList();
+            var input = InputLines().ToList();
 
             var current = new Coord(0, 0);
             var pathLength = 0;
