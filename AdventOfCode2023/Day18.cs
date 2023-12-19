@@ -41,7 +41,7 @@ namespace AdventOfCode2023
             // The edge of the calculated area follows the center of the outline trench, so we add:
             // 1) Half the path length, i.e. from the center of the outline trench to its edge
             // 2) One extra unit, i.e the four quarter units of the outer corners of the trench
-            Console.WriteLine(Math.Abs(area) / 2 + pathLength / 2 + 1);
+            Console.WriteLine(Math.Abs(area / 2) + pathLength / 2 + 1);
         }
     }
 }
