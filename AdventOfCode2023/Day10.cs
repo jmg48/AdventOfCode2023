@@ -1,11 +1,11 @@
 namespace AdventOfCode2023
 {
-    public class Day10
+    public class Day10 : Aoc
     {
         [Test]
         public void Part()
         {
-            var input = File.ReadAllLines("Input10.txt");
+            var input = InputLines().ToArray();
 
             Pipe Cell(Coord coord)
             {

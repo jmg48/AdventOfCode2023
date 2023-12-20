@@ -1,11 +1,11 @@
 namespace AdventOfCode2023
 {
-    public class Aoife01
+    public class Aoife01 : Aoc
     {
         [Test]
         public void Part1()
         {
-            var input = File.ReadAllLines("Input1.txt");
+            var input = InputLines().ToArray();
 
             var total = 0;
             foreach (var line in input)

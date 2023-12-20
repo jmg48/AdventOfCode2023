@@ -2,12 +2,12 @@ using System.Diagnostics;
 
 namespace AdventOfCode2023
 {
-    public class Day06
+    public class Day06 : Aoc
     {
         [Test]
         public void Part1()
         {
-            var input = File.ReadAllLines("Input6.txt");
+            var input = InputLines().ToArray();
             var times = input[0].Split(':')[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(long.Parse).ToList();
             var distances = input[1].Split(':')[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(long.Parse).ToList();
 

@@ -3,15 +3,15 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode2023
 {
-    public class Day15
+    public class Day15 : Aoc
     {
         [Test]
-        public void Part1() => Console.WriteLine(File.ReadAllText("Input15.txt").Split(',').Select(Hash).Sum());
+        public void Part1() => Console.WriteLine(InputText().Split(',').Select(Hash).Sum());
 
         [Test]
         public void Part2()
         {
-            var input = File.ReadLines("Input15.txt").ToList();
+            var input = InputLines().ToList();
 
             var steps = input[0].Split(',');
 

@@ -1,6 +1,6 @@
 namespace AdventOfCode2023
 {
-    public class Day11
+    public class Day11 : Aoc
     {
         [TestCase(1)]
         [TestCase(2)]
@@ -8,7 +8,7 @@ namespace AdventOfCode2023
         {
             var scale = part switch { 1 => 1, 2 => 999999 };
 
-            var input = File.ReadLines("Input11.txt").ToList();
+            var input = InputLines().ToList();
             var rows = new HashSet<int>();
             var cols = new HashSet<int>();
             for (var i = 0; i < input.Count; i++)

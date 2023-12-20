@@ -1,11 +1,11 @@
 namespace AdventOfCode2023
 {
-    public class Day09
+    public class Day09 : Aoc
     {
         [Test]
         public void Part()
         {
-            var input = File.ReadAllLines("Input9.txt");
+            var input = InputLines().ToArray();
             var sequences = input.Select(line => line.Split(" ").Select(long.Parse).ToList());
 
             long result = 0;

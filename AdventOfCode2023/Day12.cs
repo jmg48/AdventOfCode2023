@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace AdventOfCode2023
 {
-    public class Day12
+    public class Day12 : Aoc
     {
         [TestCase(1)]
         [TestCase(2)]
@@ -11,10 +11,7 @@ namespace AdventOfCode2023
             var timer = new Stopwatch();
             timer.Start();
 
-            //var outFile = "C:\\src\\Day12.txt";
-            //File.WriteAllLines(outFile, new[] { "Day 12 Part 2"});
-
-            var input = File.ReadLines("Input12.txt").ToList();
+            var input = InputLines().ToList();
 
             var tasks = input.Select(line => Task.Factory.StartNew(() =>
             {

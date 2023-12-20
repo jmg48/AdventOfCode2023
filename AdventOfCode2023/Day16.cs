@@ -1,18 +1,18 @@
 namespace AdventOfCode2023
 {
-    public class Day16
+    public class Day16 : Aoc
     {
         [Test]
         public void Part1()
         {
-            var input = File.ReadLines("Input16.txt").ToList();
+            var input = InputLines().ToList();
             Console.WriteLine(Energy(input, (new Coord(0, -1), Dir.E)));
         }
 
         [Test]
         public void Part2()
         {
-            var input = File.ReadLines("Input16.txt").ToList();
+            var input = InputLines().ToList();
 
             var result = 0;
             for (var i = 0; i < input.Count; i++)

@@ -1,11 +1,11 @@
 namespace AdventOfCode2023
 {
-    public class Day14
+    public class Day14 : Aoc
     {
         [Test]
         public void Part1()
         {
-            var input = File.ReadLines("Input14.txt").ToList();
+            var input = InputLines().ToList();
 
             var result = 0;
             for (var j = 0; j < input[0].Length; j++)
@@ -23,7 +23,7 @@ namespace AdventOfCode2023
         [Test]
         public void Part2()
         {
-            var input = File.ReadLines("Input14.txt").Select(s => s.ToList()).ToList();
+            var input = InputLines().Select(s => s.ToList()).ToList();
 
             var loads = new List<int>();
             for (var cycle = 1; cycle <= 1000; cycle++)

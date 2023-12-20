@@ -1,11 +1,11 @@
 namespace AdventOfCode2023
 {
-    public class Day04
+    public class Day04 : Aoc
     {
         [Test]
         public void Part1()
         {
-            var input = File.ReadAllLines("Input4.txt");
+            var input = InputLines().ToArray();
 
             var result = 0;
             foreach (var line in input)
@@ -31,7 +31,7 @@ namespace AdventOfCode2023
         [Test]
         public void Part2()
         {
-            var input = File.ReadAllLines("Input4.txt");
+            var input = InputLines().ToArray();
 
             var copies = input.Select(s => 1).ToList();
 

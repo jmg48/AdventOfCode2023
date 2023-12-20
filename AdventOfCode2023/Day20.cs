@@ -1,5 +1,3 @@
-using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace AdventOfCode2023
@@ -63,15 +61,18 @@ namespace AdventOfCode2023
                         lo++;
                     }
 
-                    if (to == "cs" && pulse)
+                    if (part == 2)
                     {
-                        if (!cycles.TryGetValue(from, out var values))
+                        if (to == "cs" && pulse)
                         {
-                            values = new List<int>();
-                            cycles[from] = values;
-                        }
+                            if (!cycles.TryGetValue(from, out var values))
+                            {
+                                values = new List<int>();
+                                cycles[from] = values;
+                            }
 
-                        values.Add(i);
+                            values.Add(i + 1);
+                        }
                     }
 
                     if (modules.TryGetValue(to, out var module))

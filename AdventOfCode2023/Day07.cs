@@ -1,12 +1,12 @@
 namespace AdventOfCode2023
 {
-    public class Day07
+    public class Day07 : Aoc
     {
         [TestCase(1)]
         [TestCase(2)]
         public void Part(int part)
         {
-            var input = File.ReadAllLines("Input7.txt");
+            var input = InputLines().ToArray();
 
             var result = input.Select(line =>
                 {

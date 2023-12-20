@@ -1,6 +1,6 @@
 namespace AdventOfCode2023
 {
-    public class Day13
+    public class Day13 : Aoc
     {
         [TestCase(1)]
         [TestCase(2)]
@@ -9,7 +9,7 @@ namespace AdventOfCode2023
             var target = part switch { 1 => 0, 2 => 1 };
 
             var patterns = new List<List<string>> { new() };
-            foreach (var line in File.ReadLines("Input13.txt"))
+            foreach (var line in InputLines())
             {
                 if (line.Length == 0)
                 {

@@ -2,12 +2,12 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode2023
 {
-    public class Day08
+    public class Day08 : Aoc
     {
         [Test]
         public void Part1()
         {
-            var input = File.ReadAllLines("Input8.txt");
+            var input = InputLines().ToArray();
 
             var directions = input[0];
 
@@ -38,7 +38,7 @@ namespace AdventOfCode2023
         [Test]
         public void Part2()
         {
-            var input = File.ReadAllLines("Input8.txt");
+            var input = InputLines().ToArray();
 
             var directions = input[0];
 

@@ -2,13 +2,13 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode2023
 {
-    public class Day05
+    public class Day05 : Aoc
     {
         [TestCase(1)]
         [TestCase(2)]
         public void Part(int part)
         {
-            var input = File.ReadAllLines("Input5.txt");
+            var input = InputLines().ToArray();
 
             var seeds = input[0].Split(':')[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(long.Parse).ToList();
 
