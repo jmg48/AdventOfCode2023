@@ -98,7 +98,7 @@ namespace AdventOfCode2023
         }
 
         // Quick-and-dirty prime sieve
-        IEnumerable<int> PrimeFactorsOf(int value)
+        public static IEnumerable<int> PrimeFactorsOf(int value)
         {
             var primes = new HashSet<int>();
             for (var i = 2; i * i <= value; i++)
