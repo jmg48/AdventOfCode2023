@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Concurrent;
-using System.Drawing;
-using System.Text.RegularExpressions;
-
 namespace AdventOfCode2023
 {
     public class Day21 : Aoc
@@ -22,21 +17,9 @@ namespace AdventOfCode2023
             var work = new HashSet<Coord> { start };
             for (var i = 0; i < 64; i++)
             {
-                var next = new HashSet<Coord>();
-                foreach (var coord in work)
-                {
-                    foreach (var dir in new[] { Dir.N, Dir.S, Dir.E, Dir.W })
-                    {
-                        var dest = coord.Move(dir);
-
-                        if (dest.X >= 0 && dest.Y >= 0 && dest.X < gridSize && dest.Y < gridSize && input[dest.X][dest.Y] != '#')
-                        {
-                            next.Add(dest);
-                        }
-                    }
-                }
-
-                work = next;
+                work = new HashSet<Coord>(work
+                    .SelectMany(it => new[] { Dir.N, Dir.S, Dir.E, Dir.W }.Select(dir => it.Move(dir)))
+                    .Where(dest => dest.X >= 0 && dest.Y >= 0 && dest.X < gridSize && dest.Y < gridSize && input[dest.X][dest.Y] != '#'));
             }
 
             Console.WriteLine(work.Count);
@@ -54,8 +37,8 @@ namespace AdventOfCode2023
                     .Select(j => new Coord(i, j)))
                 .Single();
 
-            var grids = (long)26501365 / input.Count;
-            var rem = 26501365 % input.Count;
+            var grids = 26501365 / gridSize;
+            var rem = 26501365 % gridSize;
 
             // By inspection, the grid is square and there are no barriers on the direct horizontal / vertical path from S
             // So, we'd expect the result to be quadratic in (rem + n * gridSize) steps, i.e. (rem), (rem + gridSize), (rem + 2 * gridSize), ...
@@ -67,25 +50,12 @@ namespace AdventOfCode2023
             {
                 for (; steps < n * gridSize + rem; steps++)
                 {
-                    var next = new HashSet<Coord>();
-                    foreach (var coord in work)
-                    {
-                        foreach (var dir in new[] { Dir.N, Dir.S, Dir.E, Dir.W })
-                        {
-                            var dest = coord.Move(dir);
-
-                            // There are no longer any bounds to the grid, we use modulo arithmetic to find the state for any (x, y)
-                            if (input[((dest.X % 131) + 131) % 131][((dest.Y % 131) + 131) % 131] != '#')
-                            {
-                                next.Add(dest);
-                            }
-                        }
-                    }
-
-                    work = next;
+                    // Funky modulo arithmetic bc modulo of a negative number is negative, which isn't what we want here
+                    work = new HashSet<Coord>(work
+                        .SelectMany(it => new[] { Dir.N, Dir.S, Dir.E, Dir.W }.Select(dir => it.Move(dir)))
+                        .Where(dest => input[((dest.X % 131) + 131) % 131][((dest.Y % 131) + 131) % 131] != '#'));
                 }
 
-                Console.WriteLine(work.Count);
                 sequence.Add(work.Count);
             }
 
@@ -100,6 +70,11 @@ namespace AdventOfCode2023
             long F(long n)
             {
                 return a * (n * n) + b * n + c;
+            }
+
+            for (var i = 0; i < sequence.Count; i++)
+            {
+                Console.WriteLine($"{sequence[i]} : {F(i)}");
             }
 
             Console.WriteLine(F(grids));
