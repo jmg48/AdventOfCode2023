@@ -103,15 +103,7 @@ namespace AdventOfCode2023
             var primes = new HashSet<int>();
             for (var i = 2; i * i <= value; i++)
             {
-                var isPrime = true;
-                foreach (var prime in primes)
-                {
-                    if (i % prime == 0)
-                    {
-                        isPrime = false;
-                    }
-                }
-
+                var isPrime = primes.All(prime => i % prime != 0);
                 if (isPrime)
                 {
                     primes.Add(i);
