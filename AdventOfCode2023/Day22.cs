@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection.Emit;
 
 namespace AdventOfCode2023
@@ -7,8 +8,11 @@ namespace AdventOfCode2023
         private record Brick(int X1, int Y1, int Z1, int X2, int Y2, int Z2);
 
         [Test]
-        public void Part()
+        public async Task Part()
         {
+            var timer = new Stopwatch();
+            timer.Restart();
+
             var bricks = new Dictionary<int, List<Brick>>();
             foreach (var line in InputLines())
             {
@@ -51,20 +55,18 @@ namespace AdventOfCode2023
                 .ToList();
             
             var safe = bricks.SelectMany(layer => layer.Value).Except(criticalBricks).ToList();
-            Console.WriteLine($"Part 1: {safe.Count}");
+            Console.WriteLine($"Part 1: {safe.Count} in {timer.ElapsedMilliseconds}ms");
+            timer.Restart();
 
-            var result = 0;
-            foreach (var layer in bricks.Values)
-            {
-                foreach (var brick in layer)
+            var result = await Task.WhenAll(bricks.Values.SelectMany(layer => layer).Select(brick =>
+                Task.Factory.StartNew(() =>
                 {
                     var copy = bricks.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
                     Assert.That(copy[brick.Z2].Remove(brick), Is.True);
-                    result += Collapse(copy);
-                }
-            }
+                    return Collapse(copy);
+                })));
 
-            Console.WriteLine($"Part 2: {result}");
+            Console.WriteLine($"Part 2: {result.Sum()} in {timer.ElapsedMilliseconds}ms");
         }
 
         private int Collapse(Dictionary<int, List<Brick>> bricks)
