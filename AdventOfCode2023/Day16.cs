@@ -59,7 +59,7 @@ namespace AdventOfCode2023
 
                 result.Add(next);
 
-                switch ((input[next.X][next.Y], current.Dir))
+                switch ((input[(int)next.X][(int)next.Y], current.Dir))
                 {
                     case ('.', _):
                     case ('|', Dir.N):

@@ -1,6 +1,6 @@
 namespace AdventOfCode2023;
 
-public record Coord(int X, int Y)
+public record Coord(long X, long Y)
 {
     public Coord Move(Dir dir, int dist = 1)
     {

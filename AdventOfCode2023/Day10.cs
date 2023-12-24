@@ -9,7 +9,7 @@ namespace AdventOfCode2023
 
             Pipe Cell(Coord coord)
             {
-                return new Pipe(input[coord.X][coord.Y]);
+                return new Pipe(input[coord.X][(int)coord.Y]);
             }
 
             var distance = 0;

@@ -19,7 +19,7 @@ namespace AdventOfCode2023
             {
                 work = new HashSet<Coord>(work
                     .SelectMany(it => new[] { Dir.N, Dir.S, Dir.E, Dir.W }.Select(dir => it.Move(dir)))
-                    .Where(dest => dest.X >= 0 && dest.Y >= 0 && dest.X < gridSize && dest.Y < gridSize && input[dest.X][dest.Y] != '#'));
+                    .Where(dest => dest.X >= 0 && dest.Y >= 0 && dest.X < gridSize && dest.Y < gridSize && input[(int)dest.X][(int)dest.Y] != '#'));
             }
 
             Console.WriteLine(work.Count);
@@ -53,7 +53,7 @@ namespace AdventOfCode2023
                     // Funky modulo arithmetic bc modulo of a negative number is negative, which isn't what we want here
                     work = new HashSet<Coord>(work
                         .SelectMany(it => new[] { Dir.N, Dir.S, Dir.E, Dir.W }.Select(dir => it.Move(dir)))
-                        .Where(dest => input[((dest.X % 131) + 131) % 131][((dest.Y % 131) + 131) % 131] != '#'));
+                        .Where(dest => input[(int)((dest.X % 131) + 131) % 131][(int)((dest.Y % 131) + 131) % 131] != '#'));
                 }
 
                 sequence.Add(work.Count);

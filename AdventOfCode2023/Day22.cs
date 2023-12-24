@@ -58,15 +58,18 @@ namespace AdventOfCode2023
             Console.WriteLine($"Part 1: {safe.Count} in {timer.ElapsedMilliseconds}ms");
             timer.Restart();
 
-            var result = await Task.WhenAll(bricks.Values.SelectMany(layer => layer).Select(brick =>
-                Task.Factory.StartNew(() =>
+            var result = bricks.Values
+                .SelectMany(layer => layer)
+                .AsParallel().WithDegreeOfParallelism(20)
+                .Select(brick =>
                 {
                     var copy = bricks.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
                     Assert.That(copy[brick.Z2].Remove(brick), Is.True);
                     return Collapse(copy);
-                })));
+                }).Sum();
 
-            Console.WriteLine($"Part 2: {result.Sum()} in {timer.ElapsedMilliseconds}ms");
+            Console.WriteLine($"Part 2: {result} in {timer.ElapsedMilliseconds}ms");
+            timer.Restart();
         }
 
         private int Collapse(Dictionary<int, List<Brick>> bricks)

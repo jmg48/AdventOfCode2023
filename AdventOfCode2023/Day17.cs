@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace AdventOfCode2023
 {
     public class Day17 : Aoc
@@ -6,6 +8,9 @@ namespace AdventOfCode2023
         [TestCase(2)]
         public void Part(int part)
         {
+            var timer = new Stopwatch();
+            timer.Start();
+
             var maxPath = part switch { 1 => 3, 2 => 10 };
             var minPath = part switch { 1 => 0, 2 => 4 };
 
@@ -37,7 +42,7 @@ namespace AdventOfCode2023
                         return;
                     }
 
-                    var newScore = score + input[newKey.Pos.X][newKey.Pos.Y];
+                    var newScore = score + input[(int)newKey.Pos.X][(int)newKey.Pos.Y];
                     if (!unvisited.TryGetValue(newKey, out var bestScore) || newScore < bestScore)
                     {
                         unvisited[newKey] = newScore;
@@ -71,7 +76,7 @@ namespace AdventOfCode2023
                 .Where(kvp => kvp.Key.Pos.X == input.Count - 1 && kvp.Key.Pos.Y == input[0].Count - 1 && kvp.Key.Path >= minPath)
                 .Select(kvp => kvp.Value).Min();
 
-            Console.WriteLine(result);
+            Console.WriteLine($"{result} in {timer.ElapsedMilliseconds}ms");
         }
 
         private record Key(Coord Pos, Dir Dir, int Path);
