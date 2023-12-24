@@ -1,22 +1,12 @@
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Reflection.Emit;
-
 namespace AdventOfCode2023
 {
     public class Day24 : Aoc
     {
         [Test]
-        public async Task Part()
+        public void Part1()
         {
             var hailStones = new List<(Coord position, Coord velocity)>();
-            var inputLines = InputLines();
-//            inputLines = @"19, 13, 30 @ -2,  1, -2
-//18, 19, 22 @ -1, -1, -2
-//20, 25, 34 @ -2, -2, -4
-//12, 31, 28 @ -1, -2, -1
-//20, 19, 15 @  1, -5, -3".Split("\n");
-            foreach (var inputLine in inputLines)
+            foreach (var inputLine in InputLines())
             {
                 var split = inputLine.Split(',', '@').Select(s => s.Trim()).Select(long.Parse).ToArray();
                 hailStones.Add((new Coord(split[0], split[1]), new Coord(split[3], split[4])));
@@ -47,10 +37,9 @@ namespace AdventOfCode2023
 
                     var lo = 200000000000000;
                     var hi = 400000000000000;
-                    //(lo, hi) = (7, 27);
                     if (t1 >= 0 && t2>= 0 && x >= lo && y >= lo && x <= hi && y <= hi)
                     {
-                        //Console.WriteLine((i,j,t1, t2, x, y));
+                        Console.WriteLine((i, j, t1, t2, x, y));
                         result.Add((i,j,t1,t2, x, y));
                     }
                 }
